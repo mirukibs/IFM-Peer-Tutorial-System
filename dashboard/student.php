@@ -25,19 +25,19 @@ if (isset($_GET['mark_read'])) {
 $upcomingCount = $conn->query("SELECT COUNT(*) as c FROM (
     SELECT s.id FROM session_registrations r
     JOIN sessions s ON r.session_id=s.id
-    WHERE r.student_id=$uid AND s.status='accepted' AND s.end_time >= NOW()
+    WHERE r.student_id=$uid AND s.status='accepted' AND s.end_time >= datetime('now')
     UNION
     SELECT s.id FROM sessions s
-    WHERE s.learner_id=$uid AND s.status='accepted' AND s.end_time >= NOW()
+    WHERE s.learner_id=$uid AND s.status='accepted' AND s.end_time >= datetime('now')
 ) as combined")->fetch_assoc()['c'];
 
 $completedCount = $conn->query("SELECT COUNT(*) as c FROM (
     SELECT s.id FROM session_registrations r
     JOIN sessions s ON r.session_id=s.id
-    WHERE r.student_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+    WHERE r.student_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
     UNION
     SELECT s.id FROM sessions s
-    WHERE s.learner_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+    WHERE s.learner_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
 ) as combined")->fetch_assoc()['c'];
 
 $feedbackCount = $conn->query("SELECT COUNT(*) as c FROM feedback WHERE rater_id=$uid")->fetch_assoc()['c'];
@@ -60,12 +60,12 @@ $sessions = $conn->query("SELECT s.title,s.start_time,s.end_time,u.first_name,u.
 FROM session_registrations r
 JOIN sessions s ON r.session_id=s.id
 JOIN users u ON s.tutor_id=u.id
-WHERE r.student_id=$uid AND s.status='accepted' AND s.end_time >= NOW()
+WHERE r.student_id=$uid AND s.status='accepted' AND s.end_time >= datetime('now')
 UNION
 SELECT s.title,s.start_time,s.end_time,u.first_name,u.last_name
 FROM sessions s
 JOIN users u ON s.tutor_id=u.id
-WHERE s.learner_id=$uid AND s.status='accepted' AND s.end_time >= NOW()
+WHERE s.learner_id=$uid AND s.status='accepted' AND s.end_time >= datetime('now')
 ORDER BY start_time ASC LIMIT 5");
 
 // Completed Sessions
@@ -73,12 +73,12 @@ $completed = $conn->query("SELECT s.title,s.end_time,u.first_name,u.last_name
 FROM session_registrations r
 JOIN sessions s ON r.session_id=s.id
 JOIN users u ON s.tutor_id=u.id
-WHERE r.student_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+WHERE r.student_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
 UNION
 SELECT s.title,s.end_time,u.first_name,u.last_name
 FROM sessions s
 JOIN users u ON s.tutor_id=u.id
-WHERE s.learner_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+WHERE s.learner_id=$uid AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
 ORDER BY end_time DESC LIMIT 5");
 ?>
 <!DOCTYPE html>

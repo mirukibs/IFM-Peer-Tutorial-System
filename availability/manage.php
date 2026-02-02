@@ -33,7 +33,16 @@ if (isset($_GET['delete'])) {
 }
 
 // Fetch availability
-$res = $conn->query("SELECT * FROM tutor_availability WHERE tutor_id=$tutor_id ORDER BY FIELD(day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')");
+$res = $conn->query("SELECT * FROM tutor_availability WHERE tutor_id=$tutor_id ORDER BY 
+    CASE day_of_week
+        WHEN 'Monday' THEN 1
+        WHEN 'Tuesday' THEN 2
+        WHEN 'Wednesday' THEN 3
+        WHEN 'Thursday' THEN 4
+        WHEN 'Friday' THEN 5
+        WHEN 'Saturday' THEN 6
+        WHEN 'Sunday' THEN 7
+    END");
 ?>
 <!DOCTYPE html>
 <html lang="en">

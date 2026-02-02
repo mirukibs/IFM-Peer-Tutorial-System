@@ -86,6 +86,16 @@ INSERT INTO tutor_subjects (id, tutor_id, subject, year_of_study, degree_program
 (15, 14, 'Data Structures', 1, 'Bsc in computer science'),
 (16, 14, 'web technologies', 1, 'Bsc in computer science');
 
+-- Table: tutor_availability
+CREATE TABLE IF NOT EXISTS tutor_availability (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tutor_id INTEGER,
+  day_of_week VARCHAR(20),
+  start_time TIME,
+  end_time TIME,
+  FOREIGN KEY (tutor_id) REFERENCES users(id)
+);
+
 -- Table: users
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

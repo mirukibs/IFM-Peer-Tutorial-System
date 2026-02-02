@@ -67,7 +67,7 @@ $where = $search ? "WHERE u.first_name LIKE '%$search%' OR u.last_name LIKE '%$s
 
 $users = $conn->query("
   SELECT u.id, u.first_name, u.last_name, u.email, u.status, u.deactivation_reason,
-         GROUP_CONCAT(ur.role SEPARATOR ', ') AS roles
+         GROUP_CONCAT(ur.role, ', ') AS roles
   FROM users u
   LEFT JOIN user_roles ur ON u.id = ur.user_id
   $where
@@ -109,7 +109,7 @@ if (isset($_GET['ajax'])) {
     $where = $search ? "WHERE u.first_name LIKE '%$search%' OR u.last_name LIKE '%$search%' OR u.email LIKE '%$search%'" : "";
     $users = $conn->query("
       SELECT u.id, u.first_name, u.last_name, u.email, u.status, u.deactivation_reason,
-             GROUP_CONCAT(ur.role SEPARATOR ', ') AS roles
+             GROUP_CONCAT(ur.role, ', ') AS roles
       FROM users u
       LEFT JOIN user_roles ur ON u.id = ur.user_id
       $where

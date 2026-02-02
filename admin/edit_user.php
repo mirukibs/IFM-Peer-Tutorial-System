@@ -13,38 +13,71 @@ if (!$user_id) die("User not found.");
 $message = "";
 
 // Fetch user
-$stmt = $conn->prepare("SELECT id, first_name, last_name, email, role, status FROM users WHERE id=?");
+$stmt = $conn->prepare("SELECT id, first_name, last_name, email, status FROM users WHERE id=?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 if (!$user) die("User not found.");
 
+// Fetch user roles
+$roleStmt = $conn->prepare("SELECT role FROM user_roles WHERE user_id=?");
+$roleStmt->bind_param("i", $user_id);
+$roleStmt->execute();
+$roleResult = $roleStmt->get_result();
+$userRoles = [];
+while ($r = $roleResult->fetch_assoc()) {
+    $userRoles[] = $r['role'];
+}
+
 // Handle updates
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fname = trim($_POST['first_name']);
     $lname = trim($_POST['last_name']);
-    $role  = $_POST['role'];
+    $roles  = $_POST['roles'] ?? [];
     $status = $_POST['status'];
     $password = $_POST['password'];
 
+    // Update basic info
     if (!empty($password)) {
         $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, role=?, status=?, password_hash=? WHERE id=?");
-        $stmt->bind_param("sssssi", $fname, $lname, $role, $status, $hashed, $user_id);
+        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, status=?, password_hash=? WHERE id=?");
+        $stmt->bind_param("ssssi", $fname, $lname, $status, $hashed, $user_id);
     } else {
-        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, role=?, status=? WHERE id=?");
-        $stmt->bind_param("ssssi", $fname, $lname, $role, $status, $user_id);
+        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, status=? WHERE id=?");
+        $stmt->bind_param("sssi", $fname, $lname, $status, $user_id);
     }
     $stmt->execute();
 
+    // Update roles - delete existing and insert new
+    $delStmt = $conn->prepare("DELETE FROM user_roles WHERE user_id=?");
+    $delStmt->bind_param("i", $user_id);
+    $delStmt->execute();
+    
+    if (!empty($roles)) {
+        $roleStmt = $conn->prepare("INSERT INTO user_roles (user_id, role) VALUES (?, ?)");
+        foreach ($roles as $role) {
+            $roleStmt->bind_param("is", $user_id, $role);
+            $roleStmt->execute();
+        }
+    }
+
     $message = "<p class='success'>✅ User profile updated successfully.</p>";
 
-    // Reload updated user
-    $stmt = $conn->prepare("SELECT id, first_name, last_name, email, role, status FROM users WHERE id=?");
+    // Reload updated user and roles
+    $stmt = $conn->prepare("SELECT id, first_name, last_name, email, status FROM users WHERE id=?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
+    
+    $roleStmt = $conn->prepare("SELECT role FROM user_roles WHERE user_id=?");
+    $roleStmt->bind_param("i", $user_id);
+    $roleStmt->execute();
+    $roleResult = $roleStmt->get_result();
+    $userRoles = [];
+    while ($r = $roleResult->fetch_assoc()) {
+        $userRoles[] = $r['role'];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -80,12 +113,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <label>Email (read-only)</label>
       <input type="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly>
 
-      <label>Role</label>
-      <select name="role">
-        <option value="student" <?php if($user['role']=="student") echo "selected"; ?>>Student</option>
-        <option value="tutor" <?php if($user['role']=="tutor") echo "selected"; ?>>Tutor</option>
-        <option value="admin" <?php if($user['role']=="admin") echo "selected"; ?>>Admin</option>
-      </select>
+      <label>Roles (select all that apply)</label>
+      <div style="margin: 10px 0;">
+        <label style="display:inline-block; margin-right:15px; font-weight:normal;">
+          <input type="checkbox" name="roles[]" value="student" <?php if(in_array('student', $userRoles)) echo 'checked'; ?>> Student
+        </label>
+        <label style="display:inline-block; margin-right:15px; font-weight:normal;">
+          <input type="checkbox" name="roles[]" value="tutor" <?php if(in_array('tutor', $userRoles)) echo 'checked'; ?>> Tutor
+        </label>
+        <label style="display:inline-block; font-weight:normal;">
+          <input type="checkbox" name="roles[]" value="admin" <?php if(in_array('admin', $userRoles)) echo 'checked'; ?>> Admin
+        </label>
+      </div>
 
       <label>Status</label>
       <select name="status">

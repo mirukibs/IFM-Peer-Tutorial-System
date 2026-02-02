@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
     $result = $check->get_result()->fetch_assoc();
 
     if ($result && $result['status'] === 'accepted') {
-        $stmt = $conn->prepare("UPDATE sessions SET status='completed', end_time=NOW() WHERE id=? AND tutor_id=?");
+        $stmt = $conn->prepare("UPDATE sessions SET status='completed', end_time=datetime('now') WHERE id=? AND tutor_id=?");
         $stmt->bind_param("ii", $sid, $tid);
         if ($stmt->execute()) {
             // Notify student

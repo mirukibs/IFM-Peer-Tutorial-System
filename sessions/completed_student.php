@@ -21,13 +21,13 @@ $completed = $conn->query("
     JOIN sessions s ON r.session_id=s.id
     JOIN users u ON s.tutor_id=u.id
     WHERE r.student_id=$uid 
-      AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+      AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
     UNION
     SELECT s.title,s.start_time,s.end_time,u.first_name,u.last_name
     FROM sessions s
     JOIN users u ON s.tutor_id=u.id
     WHERE s.learner_id=$uid 
-      AND (s.status='completed' OR (s.status='accepted' AND s.end_time < NOW()))
+      AND (s.status='completed' OR (s.status='accepted' AND s.end_time < datetime('now')))
     ORDER BY end_time DESC
 ");
 ?>

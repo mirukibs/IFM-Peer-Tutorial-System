@@ -1,16 +1,58 @@
 <?php
-// SQLite Database Configuration
-$db_path = __DIR__ . '/../peer_tutoring.db';
+/**
+ * Database Configuration
+ * 
+ * Supports both MySQL and SQLite
+ * Change DB_TYPE to switch between databases
+ */
 
+// ========================================
+// CONFIGURATION - EDIT HERE
+// ========================================
+define('DB_TYPE', 'sqlite'); // 'mysql' or 'sqlite'
+
+// MySQL Configuration (used when DB_TYPE = 'mysql')
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'peer_tutoring');
+
+// SQLite Configuration (used when DB_TYPE = 'sqlite')
+define('DB_PATH', __DIR__ . '/../peer_tutoring.db');
+
+// ========================================
+// DATABASE CONNECTION
+// ========================================
 try {
-    $pdo = new PDO("sqlite:$db_path");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    if (DB_TYPE === 'mysql') {
+        // Use native mysqli for MySQL (no compatibility layer needed)
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        
+        if ($conn->connect_error) {
+            die("Database Connection Failed: " . $conn->connect_error);
+        }
+        
+        $conn->set_charset("utf8mb4");
+        
+    } else {
+        // Use PDO with mysqli compatibility layer for SQLite
+        $pdo = new PDO("sqlite:" . DB_PATH);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        
+        // Create mysqli-compatible wrapper for SQLite
+        $conn = new MysqliCompat($pdo);
+    }
+} catch (Exception $e) {
     die("Database Connection Failed: " . $e->getMessage());
 }
 
-// Mysqli-compatible wrapper class
+// ========================================
+// MYSQLI COMPATIBILITY LAYER (for SQLite only)
+// ========================================
+// This wrapper is only used when DB_TYPE = 'sqlite'
+// It provides mysqli-style methods for PDO/SQLite
+// When using MySQL, native mysqli is used directly (no wrapper needed)
 class MysqliCompat {
     private $pdo;
     public $connect_error = null;
@@ -36,7 +78,7 @@ class MysqliCompat {
         try {
             $stmt = $this->pdo->prepare($sql);
             $this->error = '';
-            return new stmtWrapper($stmt, $this->pdo);
+            return new StatementWrapper($stmt, $this->pdo);
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
             return false;
@@ -52,7 +94,7 @@ class MysqliCompat {
     }
 }
 
-class stmtWrapper {
+class StatementWrapper {
     private $stmt;
     private $pdo;
     private $params = [];

@@ -15,7 +15,7 @@ $user = $res->fetch_assoc();
 $tutorName = $user ? $user['first_name']." ".$user['last_name'] : "Tutor";
 
 // Counts
-$upcomingCount = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id=$uid AND status='accepted' AND start_time >= NOW()")->fetch_assoc()['c'];
+$upcomingCount = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id=$uid AND status='accepted' AND start_time >= datetime('now')")->fetch_assoc()['c'];
 $completedCount = $conn->query("SELECT COUNT(*) as c FROM sessions WHERE tutor_id=$uid AND status='completed'")->fetch_assoc()['c'];
 $feedbackCount  = $conn->query("SELECT COUNT(*) as c FROM feedback f JOIN sessions s ON f.session_id=s.id WHERE s.tutor_id=$uid")->fetch_assoc()['c'];
 $noteCount      = $conn->query("SELECT COUNT(*) as c FROM notifications WHERE user_id=$uid AND is_read=0")->fetch_assoc()['c'];
@@ -38,7 +38,7 @@ $feedback = $conn->query("
 $sessions = $conn->query("
     SELECT title, start_time, end_time
     FROM sessions
-    WHERE tutor_id=$uid AND status='accepted' AND start_time >= NOW()
+    WHERE tutor_id=$uid AND status='accepted' AND start_time >= datetime('now')
     ORDER BY start_time ASC
     LIMIT 5
 ");

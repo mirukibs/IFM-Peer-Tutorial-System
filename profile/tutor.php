@@ -52,7 +52,7 @@ if (isset($_POST['update_profile'])) {
     $upd = $conn->prepare("UPDATE users 
                            SET first_name=?, last_name=?, email=?, phone=?, profile_pic=?, year_of_study=?, degree_programme=? 
                            WHERE id=?");
-    $upd->bind_param("sssssssi", $fname, $lname, $email, $phone, $picPath, $year, $degree, $uid);
+    $upd->bind_param("sssssisi", $fname, $lname, $email, $phone, $picPath, $year, $degree, $uid);
     if ($upd->execute()) {
         // Update tutor_subjects table
         $conn->query("DELETE FROM tutor_subjects WHERE tutor_id=$uid");
