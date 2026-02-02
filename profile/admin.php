@@ -46,7 +46,7 @@ if (isset($_POST['update_profile'])) {
         $user['email']      = $email;
         $user['profile_pic'] = $picPath;
     } else {
-        $message = "<p class='error'>❌ Failed to update profile.</p>";
+        $message = "<p class='error'>Failed to update profile.</p>";
     }
 }
 
@@ -57,11 +57,11 @@ if (isset($_POST['change_password'])) {
     $confirm = $_POST['confirm_password'];
 
     if (!password_verify($current, $user['password_hash'])) {
-        $message = "<p class='error'>❌ Current password is incorrect.</p>";
+        $message = "<p class='error'>Current password is incorrect.</p>";
     } elseif ($new !== $confirm) {
-        $message = "<p class='error'>❌ New passwords do not match.</p>";
+        $message = "<p class='error'>New passwords do not match.</p>";
     } elseif (strlen($new) < 6) {
-        $message = "<p class='error'>❌ Password must be at least 6 characters.</p>";
+        $message = "<p class='error'>Password must be at least 6 characters.</p>";
     } else {
         $hash = password_hash($new, PASSWORD_DEFAULT);
         $upd = $conn->prepare("UPDATE users SET password_hash=? WHERE id=?");
@@ -69,7 +69,7 @@ if (isset($_POST['change_password'])) {
         if ($upd->execute()) {
             $message = "<p class='success'>✅ Password changed successfully.</p>";
         } else {
-            $message = "<p class='error'>❌ Failed to change password.</p>";
+            $message = "<p class='error'>Failed to change password.</p>";
         }
     }
 }

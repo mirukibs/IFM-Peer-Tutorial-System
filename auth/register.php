@@ -10,14 +10,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $roles = $_POST['roles'] ?? [];
 
     if ($password !== $confirm_password) {
-        $error = "❌ Passwords do not match.";
+        $error = "Passwords do not match.";
     } elseif (empty($roles)) {
-        $error = "❌ Please select at least one role.";
+        $error = "Please select at least one role.";
     } else {
         $passHash = password_hash($password, PASSWORD_DEFAULT);
 
-        if (!preg_match("/@ifm\.ac\.tz$/", $email)) {
-            $error = "❌ Invalid email domain. Use your institutional email (@ifm.ac.tz).";
+        if (!preg_match("/@student\.ifm\.ac\.tz$/", $email)) {
+            $error = "Invalid email domain. Use your institutional email (@student.ifm.ac.tz).";
         } else {
             $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password_hash, status) VALUES (?,?,?,?, 'active')");
             $stmt->bind_param("ssss", $fname, $lname, $email, $passHash);
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 $userId = $stmt->insert_id;
 
-                $roleStmt = $conn->prepare("INSERT IGNORE INTO user_roles (user_id, role) VALUES (?, ?)");
+                $roleStmt = $conn->prepare("INSERT OR IGNORE INTO user_roles (user_id, role) VALUES (?, ?)");
                 foreach ($roles as $role) {
                     $role = strtolower(trim($role));
                     $roleStmt->bind_param("is", $userId, $role);
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: login.php?registered=1");
                 exit;
             } else {
-                $error = "❌ Error: " . $conn->error;
+                $error = "Error: " . $conn->error;
             }
         }
     }

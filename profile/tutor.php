@@ -74,7 +74,7 @@ if (isset($_POST['update_profile'])) {
         $user['degree_programme'] = $degree;
         $tutorSubjects = $subjects;
     } else {
-        $message = "<div class='alert error'>❌ Failed to update profile.</div>";
+        $message = "<div class='alert error'>Failed to update profile.</div>";
     }
 }
 
@@ -85,11 +85,11 @@ if (isset($_POST['change_password'])) {
     $confirm = $_POST['confirm_password'];
 
     if (!password_verify($current, $user['password_hash'])) {
-        $message = "<div class='alert error'>❌ Current password is incorrect.</div>";
+        $message = "<div class='alert error'>Current password is incorrect.</div>";
     } elseif ($new !== $confirm) {
-        $message = "<div class='alert error'>❌ New passwords do not match.</div>";
+        $message = "<div class='alert error'>New passwords do not match.</div>";
     } elseif (strlen($new) < 6) {
-        $message = "<div class='alert error'>❌ Password must be at least 6 characters.</div>";
+        $message = "<div class='alert error'>Password must be at least 6 characters.</div>";
     } else {
         $hash = password_hash($new, PASSWORD_DEFAULT);
         $upd = $conn->prepare("UPDATE users SET password_hash=? WHERE id=?");
@@ -97,7 +97,7 @@ if (isset($_POST['change_password'])) {
         if ($upd->execute()) {
             $message = "<div class='alert success'>✅ Password changed successfully.</div>";
         } else {
-            $message = "<div class='alert error'>❌ Failed to change password.</div>";
+            $message = "<div class='alert error'>Failed to change password.</div>";
         }
     }
 }

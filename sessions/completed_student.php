@@ -75,7 +75,7 @@ $completed = $conn->query("
         </tbody>
       </table>
     <?php else: ?>
-      <p style="text-align:center;">❌ No completed sessions found.</p>
+      <p style="text-align:center;">No completed sessions found.</p>
     <?php endif; ?>
 
     <div style="text-align:center;">

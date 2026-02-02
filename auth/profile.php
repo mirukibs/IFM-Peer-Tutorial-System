@@ -20,9 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($password)) {
         if ($password !== $confirm) {
-            $message = "<p class='error'>❌ Passwords do not match.</p>";
+            $message = "<p class='error'>Passwords do not match.</p>";
         } elseif (strlen($password) < 8) {
-            $message = "<p class='error'>❌ Password must be at least 8 characters.</p>";
+            $message = "<p class='error'>Password must be at least 8 characters.</p>";
         } else {
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, password_hash=? WHERE id=?");
@@ -39,11 +39,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch user details
-$stmt = $conn->prepare("SELECT first_name,last_name,email,role,status FROM users WHERE id=?");
+$stmt = $conn->prepare("SELECT first_name,last_name,email,status FROM users WHERE id=?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
+
+// Fetch user roles
+$roleStmt = $conn->prepare("SELECT role FROM user_roles WHERE user_id=?");
+$roleStmt->bind_param("i", $user_id);
+$roleStmt->execute();
+$roleResult = $roleStmt->get_result();
+$roles = [];
+while ($r = $roleResult->fetch_assoc()) {
+    $roles[] = $r['role'];
+}
+$user['role'] = implode(', ', $roles);
 ?>
 <!DOCTYPE html>
 <html lang="en">

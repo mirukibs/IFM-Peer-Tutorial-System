@@ -15,12 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm  = $_POST['confirm_password'] ?? '';
 
     if (!$token) {
-        $message = "<p class='error'>❌ Invalid request. No token provided.</p>";
+        $message = "<p class='error'>Invalid request. No token provided.</p>";
     } elseif ($password !== $confirm) {
-        $message = "<p class='error'>❌ Passwords do not match.</p>";
+        $message = "<p class='error'>Passwords do not match.</p>";
         $formVisible = true;
     } elseif (strlen($password) < 8) {
-        $message = "<p class='error'>❌ Password must be at least 8 characters long.</p>";
+        $message = "<p class='error'>Password must be at least 8 characters long.</p>";
         $formVisible = true;
     } else {
         $newpass = password_hash($password, PASSWORD_DEFAULT);
@@ -29,11 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
-            $message = "<p class='success'>✅ Password updated successfully. 
+            $message = "<p class='success'>Password updated successfully. 
                         <a href='login.php'>Login here</a></p>";
             $formVisible = false;
         } else {
-            $message = "<p class='error'>❌ Failed to update password. The reset link may be invalid or expired.</p>";
+            $message = "<p class='error'>Failed to update password. The reset link may be invalid or expired.</p>";
         }
     }
 }
@@ -173,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
         <input type="password" id="password" name="password" placeholder="Enter new password" required>
         <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password" required>
-        <p id="pwError">❌ Passwords do not match</p>
+        <p id="pwError">Passwords do not match</p>
         <button type="submit">Update Password</button>
       </form>
     <?php endif; ?>

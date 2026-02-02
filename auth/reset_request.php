@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $formVisible = false;
     } else {
-        $message = "<p class='error'>❌ Email not found in system.</p>";
+        $message = "<p class='error'>Email not found in system.</p>";
     }
 }
 ?>

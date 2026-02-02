@@ -81,7 +81,7 @@ $sessions = $conn->query("SELECT s.id, s.title, s.description, s.start_time, s.e
       <?php if ($s['registered'] < $s['capacity']): ?>
         <a href="?join=<?php echo $s['id']; ?>" class="join">➡ Join Session</a>
       <?php else: ?>
-        <p style="color:red;">❌ Session full</p>
+        <p style="color:red;">Session full</p>
       <?php endif; ?>
     </div>
   <?php endwhile; ?>

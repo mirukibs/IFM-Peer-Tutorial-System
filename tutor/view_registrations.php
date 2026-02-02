@@ -72,7 +72,7 @@ $students = $registrations->get_result();
         </tr>
       <?php endwhile; ?>
     <?php else: ?>
-      <tr><td colspan="3">❌ No students registered yet.</td></tr>
+      <tr><td colspan="3">No students registered yet.</td></tr>
     <?php endif; ?>
   </table>
 

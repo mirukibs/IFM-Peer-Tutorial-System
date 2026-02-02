@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
         if ($info) {
             $studentId = $info['learner_id'];
             $title     = $conn->real_escape_string($info['title']);
-            $msg = "❌ Your session request '$title' has been rejected by your tutor.";
+            $msg = "Your session request '$title' has been rejected by your tutor.";
             $conn->query("INSERT INTO notifications (user_id,message) VALUES ($studentId,'$msg')");
         }
 

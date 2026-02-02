@@ -12,12 +12,12 @@ if (isset($_GET['token'])) {
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        $message = "<p class='success'>✅ Your account has been verified! <a href='login.php'>Login here</a></p>";
+        $message = "<p class='success'>Your account has been verified! <a href='login.php'>Login here</a></p>";
     } else {
-        $message = "<p class='error'>❌ Invalid or expired verification link.</p>";
+        $message = "<p class='error'>Invalid or expired verification link.</p>";
     }
 } else {
-    $message = "<p class='error'>❌ No verification token provided.</p>";
+    $message = "<p class='error'>No verification token provided.</p>";
 }
 ?>
 <!DOCTYPE html>

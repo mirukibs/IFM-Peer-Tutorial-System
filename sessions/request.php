@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $message = "✅ Session requested successfully with tutor <b>{$tutor['first_name']} {$tutor['last_name']}</b>!";
                 $alertClass = "success";
             } else {
-                $message = "❌ Error: " . $conn->error;
+                $message = "Error: " . $conn->error;
                 $alertClass = "error";
             }
         } else {

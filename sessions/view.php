@@ -239,7 +239,7 @@ async function handleAction(action, id, el) {
       }
       alert(data.message || "✅ Action successful!");
     } else {
-      alert("❌ Something went wrong.");
+      alert("Something went wrong.");
     }
   } catch (err) {
     alert("⚠ Error: " + err.message);

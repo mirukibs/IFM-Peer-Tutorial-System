@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add'])) {
     if ($stmt->execute()) {
         $message = "✅ Availability added successfully.";
     } else {
-        $message = "❌ Error: " . $conn->error;
+        $message = "Error: " . $conn->error;
     }
 }
 

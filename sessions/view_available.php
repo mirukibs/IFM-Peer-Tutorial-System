@@ -91,9 +91,9 @@ $sessions = $conn->query("
       <p class="meta">👥 <?php echo $s['registered']." / ".$s['capacity']; ?> students registered</p>
 
       <?php if ($s['is_closed']): ?>
-        <p class="closed">❌ Session closed for registration</p>
+        <p class="closed">Session closed for registration</p>
       <?php elseif ($s['registered'] >= $s['capacity']): ?>
-        <p class="closed">❌ Session full</p>
+        <p class="closed">Session full</p>
       <?php else: ?>
         <a href="?join=<?php echo $s['id']; ?>" class="join">➡ Join Session</a>
       <?php endif; ?>

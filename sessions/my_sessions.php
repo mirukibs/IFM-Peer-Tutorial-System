@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['feedback_session'])) {
     if ($stmt->execute()) {
         $msg = "✅ Feedback submitted successfully!";
     } else {
-        $msg = "❌ Failed to submit feedback.";
+        $msg = "Failed to submit feedback.";
     }
 }
 
@@ -124,7 +124,7 @@ $sessions = $stmt->get_result();
         <p class="meta">📆 Start: <?php echo date("d M Y H:i", strtotime($s['start_time'])); ?></p>
         <p class="meta">⏰ End: <?php echo date("d M Y H:i", strtotime($s['end_time'])); ?></p>
         <p class="meta">👥 <?php echo $s['registered']." / ".$s['capacity']; ?> students registered</p>
-        <p class="meta">Status: <?php echo $s['is_closed'] ? "❌ Closed" : "✅ Open"; ?></p>
+        <p class="meta">Status: <?php echo $s['is_closed'] ? "Closed" : "✅ Open"; ?></p>
 
         <?php if ($filter === 'upcoming'): ?>
           <a href="?cancel=<?php echo $s['id']; ?>&filter=upcoming" class="cancel">🚫 Cancel Registration</a>
